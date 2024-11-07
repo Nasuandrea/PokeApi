@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivina el Pokémon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2F2F2F; /* Fondo gris oscuro */
+            color: #FFCB05; /* Color de texto amartillo */
+        }
+
+        /* Estilos para la imagen que quieres mostrar en la parte superior */
+        #headerImage {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 10px; /* Bordes redondeados */
+        }
+
+        /* Caja de la sección pokemon-info */
+        .pokemon-info {
+            margin-bottom: 20px;
+            background-color: #FFCB05; /* Fondo amarillo */
+            padding: 20px;
+            border-radius: 15px; /* Bordes redondeados */
+            text-align: left;
+            color: #3C5AA6; /* Color del texto */
+            display: inline-block;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        /* Estilo para la imagen del Pokémon */
+        #imagen {
+            width: 200px;
+            height: auto;
+            border-radius: 15px; /* Bordes redondeados */
+        }
+
+        /* Estilo para la pista */
+        #pista {
+            color: #3C5AA6; /* Color de texto para la pista */
+        }
+
+        /* Estilo para el formulario */
+        form {
+            margin-top: 20px;
+        }
+
+        /* Estilo para el botón de adivinar */
+        button {
+            background-color: #3C5AA6;
+            color: #FFCB05;
+            padding: 10px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2A4789; /* Efecto hover para el botón */
+        }
+
+        /* Estilo para el mensaje de acierto o error */
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        /* Mensaje de éxito (acierto) */
+        .success {
+            background-color: green;
+            color: black;
+        }
+
+        /* Mensaje de error (fallo) */
+        .error {
+            background-color: red;
+            color: black;
+        }
+
+        /* Estilo para el botón de nuevo Pokémon */
+        button[type="button"] {
+            background-color: #FFCB05; /* Fondo amarillo para el botón de nuevo Pokémon */
+            color: #3C5AA6; /* Texto color azul */
+            margin-top: 20px;
+        }
+
+        button[type="button"]:hover {
+            background-color: #FFB700; /* Efecto hover */
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Imagen centrada en la parte superior -->
+<img id="headerImage" src="/pokemon.png" alt="Logo del Juego Pokémon">
+
+<!-- Sección con la imagen y la pista -->
+<div>
+    <img id="imagen" th:src="${imagen}" alt="Imagen del Pokémon">
+    <h2><span id="pista" th:text="${pista}"> </span></h2>
+</div>
+
+<h2>¿Cuál es el nombre de este pokémon?</h2>
+
+<!-- Caja de información del Pokémon -->
+<div class="pokemon-info">
+    <p><strong>ID:</strong> <span id="idPokemon" th:text="${id}"></span></p>
+    <p><strong>Habilidad:</strong> <span id="habilidad" th:text="${habilidad}"></span></p>
+    <!-- Formulario para adivinar el Pokémon -->
+    <form id="guessForm">
+        <label for="nombreIntroducido"><strong>Pokémon:</strong></label>
+        <input type="text" id="nombreIntroducido" name="nombreIntroducido" required>
+        <input type="hidden" id="nombrePokemon" name="nombrePokemon" th:value="${nombre}">
+        <button type="submit"><strong>Adivinar</strong></button>
+
+    </form>
+</div>
+<div>
+<!-- Botón para obtener un nuevo Pokémon -->
+<button onclick="location.href='/new'" style="margin-top: 20px;"><strong>Nuevo Pokémon</strong></button>
+</div>
+
+<!-- Espacio para mostrar el mensaje de éxito o error -->
+<div class="message" id="message"></div>
+
+<script>
+    document.getElementById("guessForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe y recargue la página
+
+        const nombreIntroducido = document.getElementById("nombreIntroducido").value;
+        const nombrePokemon = document.getElementById("nombrePokemon").value;
+
+        // Enviar la solicitud POST al controlador "/play" usando Fetch API
+        fetch("/play", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                nombreIntroducido: nombreIntroducido,
+                nombrePokemon: nombrePokemon
+            })
+        })
+            .then(response => response.text())
+            .then(data => {
+                // Mostrar mensaje de éxito o error
+                const messageElement = document.getElementById("message");
+                messageElement.innerText = data;
+
+                // Limpiar el campo de entrada después de recibir la respuesta
+                document.getElementById("nombreIntroducido").value = "";
+
+                // Cambiar la clase del mensaje dependiendo del resultado
+                if (data.includes("¡Has acertado!")) {
+                    messageElement.classList.add("success");
+                    messageElement.classList.remove("error");
+                } else {
+                    messageElement.classList.add("error");
+                    messageElement.classList.remove("success");
+                }
+            })
+            .catch(error => {
+                document.getElementById("message").innerText = "Error en la solicitud. Inténtalo de nuevo.";
+                console.error("Error:", error);
+            });
+    });
+</script>
+
+</body>
+</html>
