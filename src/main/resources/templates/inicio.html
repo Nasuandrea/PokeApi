@@ -8,8 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #2F2F2F; /* Fondo gris oscuro */
-            color: #FFCB05; /* Color de texto amartillo */
+            background-color: #f6ee9a; /* Fondo */
+            color: #3C5AA6; /* Color de texto amartillo */
         }
 
         /* Estilos para la imagen que quieres mostrar en la parte superior */
@@ -51,19 +51,13 @@
             margin-top: 20px;
         }
 
-        /* Estilo para el botón de adivinar */
-        button {
-            background-color: #3C5AA6;
-            color: #FFCB05;
-            padding: 10px 10px;
+        /* Estilo para el botón*/
+        .btn {
+            background: transparent;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #2A4789; /* Efecto hover para el botón */
+            max-height: 48px;
+            max-width: 48px;
         }
 
         /* Estilo para el mensaje de acierto o error */
@@ -79,26 +73,18 @@
 
         /* Mensaje de éxito (acierto) */
         .success {
-            background-color: green;
-            color: black;
+            background-color: #FFCB05;
+            border-color: #3C5AA6;
+            color: #3C5AA6;
         }
 
         /* Mensaje de error (fallo) */
         .error {
             background-color: red;
-            color: black;
+            color: WHITE;
+            border-color: black;
         }
 
-        /* Estilo para el botón de nuevo Pokémon */
-        button[type="button"] {
-            background-color: #FFCB05; /* Fondo amarillo para el botón de nuevo Pokémon */
-            color: #3C5AA6; /* Texto color azul */
-            margin-top: 20px;
-        }
-
-        button[type="button"]:hover {
-            background-color: #FFB700; /* Efecto hover */
-        }
 
     </style>
 </head>
@@ -113,10 +99,9 @@
     <h2><span id="pista" th:text="${pista}"> </span></h2>
 </div>
 
-<h2>¿Cuál es el nombre de este pokémon?</h2>
-
 <!-- Caja de información del Pokémon -->
 <div class="pokemon-info">
+    <h2>¿Cuál es el nombre de este pokémon?</h2>
     <p><strong>ID:</strong> <span id="idPokemon" th:text="${id}"></span></p>
     <p><strong>Habilidad:</strong> <span id="habilidad" th:text="${habilidad}"></span></p>
     <!-- Formulario para adivinar el Pokémon -->
@@ -124,13 +109,10 @@
         <label for="nombreIntroducido"><strong>Pokémon:</strong></label>
         <input type="text" id="nombreIntroducido" name="nombreIntroducido" required>
         <input type="hidden" id="nombrePokemon" name="nombrePokemon" th:value="${nombre}">
-        <button type="submit"><strong>Adivinar</strong></button>
-
+        <button type="submit" class="btn"><img src="/pokeball.png"></button>
+        <!-- Botón para obtener un nuevo Pokémon -->
+        <button onclick="location.href='/new'" class="btn"><img src="/repetir.png"></button>
     </form>
-</div>
-<div>
-<!-- Botón para obtener un nuevo Pokémon -->
-<button onclick="location.href='/new'" style="margin-top: 20px;"><strong>Nuevo Pokémon</strong></button>
 </div>
 
 <!-- Espacio para mostrar el mensaje de éxito o error -->
